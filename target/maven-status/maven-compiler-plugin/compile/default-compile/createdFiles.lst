@@ -1,6 +1,6 @@
 com/mycompany/testmaven/DatabaseConnection.class
 model/Department.class
-com/mycompany/testmaven/resources/JakartaEE10Resource.class
 controller/DepartmentController.class
 com/mycompany/testmaven/JakartaRestConfiguration.class
 dao/DepartmentDAO.class
+com/mycompany/testmaven/resources/JakartaEE10Resource.class
