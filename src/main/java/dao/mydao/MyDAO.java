@@ -20,7 +20,7 @@ public class MyDAO extends DatabaseConnection {
     protected String xSql = null;
 
     public MyDAO() {
-        this.con = connecion;
+        this.con = connection;
     }
     
     public void finalize() {
