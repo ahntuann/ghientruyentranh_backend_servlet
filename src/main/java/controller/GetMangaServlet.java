@@ -15,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,10 +66,26 @@ public class GetMangaServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*"); // Thay '*' bằng tên miền cụ thể nếu cần
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        
         try {
+            List<Manga> mangas = new ArrayList<>();
             MangaDAO mangaDao = new MangaDAO();
-            List<Manga> mangas = mangaDao.getAllManga();
+            
+            String xName = request.getParameter("name");            
+            String xAuthor = request.getParameter("author");
+            
+            if (xAuthor != null && xName != null) {
+                List<Manga> tmp1 = mangaDao.getMangaByAuthor(xAuthor);
+                List<Manga> tmp2 = mangaDao.getMangaByName(xName);
+                
+                tmp1.addAll(tmp2);
+                mangas = tmp1;
+            } else if (xName != null) {
+                mangas = mangaDao.getMangaByName(xName);
+            } else if (xAuthor != null) {
+                mangas = mangaDao.getMangaByAuthor(xAuthor);
+            } else {
+                mangas = mangaDao.getAllManga();
+            }
             
             Gson gson = new Gson();
             String json = gson.toJson(mangas);

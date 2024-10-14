@@ -7,22 +7,21 @@ package dao;
 import java.util.List;
 import dao.mydao.MyDAO;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import model.Manga;
+import util.StringUtil;
 
 /**
  *
  * @author macbook
  */
-public class MangaDAO extends MyDAO{
-    public List<Manga> getAllManga() {
+public class MangaDAO extends MyDAO {
+
+    private List<Manga> createMangas(ResultSet rs) {
         List<Manga> mangas = new ArrayList<>();
-        xSql = "select * from stories";
         
         try {
-            ps = con.prepareStatement(xSql);
-            rs = ps.executeQuery();
-            
             while (rs.next()) {
                 int id = rs.getInt("story_id");
                 String title = rs.getString("title");
@@ -38,10 +37,63 @@ public class MangaDAO extends MyDAO{
                 
                 mangas.add(manga);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println(e);
         }
         
+        return mangas;
+    }
+
+    public List<Manga> getAllManga() {
+        List<Manga> mangas = new ArrayList<>();
+        xSql = "select * from stories";
+
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+
+            mangas = createMangas(rs);
+            
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return mangas;
+    }
+
+    public List<Manga> getMangaByName(String xName) {
+        List<Manga> mangas = new ArrayList<>();
+        xSql = "select * from stories where title like ? COLLATE Vietnamese_CI_AI";
+
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%" + xName + "%");
+            rs = ps.executeQuery();
+            
+            System.out.println(StringUtil.removeAccent(xName));
+
+            mangas = createMangas(rs);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return mangas;
+    }
+    
+    public List<Manga> getMangaByAuthor(String xAuthor) {
+        List<Manga> mangas = new ArrayList<>();
+        xSql = "select * from stories where author like ? COLLATE Vietnamese_CI_AI";
+
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%" + xAuthor + "%");
+            rs = ps.executeQuery();
+
+            mangas = createMangas(rs);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
         return mangas;
     }
 }
