@@ -1,5 +1,9 @@
 .DS_Store
 /nbproject/private/
 /build/
+<<<<<<< HEAD
 /dist/
 
+=======
+/dist/
+>>>>>>> badcbb1e962bd62f4e3ce25d84a81cd0f277fdae
