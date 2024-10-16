@@ -5,6 +5,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import dao.ChaptersDAO;
 import dao.MangaDAO;
 import model.Manga;
 import java.io.IOException;
@@ -17,10 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Chapters;
 
 @WebServlet(name = "GetMangaServlet", urlPatterns = {"/mangas"})
 public class GetMangaServlet extends HttpServlet {
-    
+
     // Phương thức lấy ra tất cả các truyện
     private void getAllMangas(HttpServletResponse response) throws IOException {
         MangaDAO mangaDao = new MangaDAO();
@@ -29,6 +31,7 @@ public class GetMangaServlet extends HttpServlet {
         String json = gson.toJson(allMangas);
         response.getWriter().write(json);
     }
+
     // Phương thức xử lý lấy ra 10 truyện mới nhất
     private void getNewestMangas(HttpServletResponse response) throws IOException {
         MangaDAO mangaDao = new MangaDAO();
@@ -37,9 +40,10 @@ public class GetMangaServlet extends HttpServlet {
         String json = gson.toJson(newMangas);
         response.getWriter().write(json);
     }
+
     //Phương thức xử lý lấy truyện theo ID
     private void getMangaById(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        MangaDAO mangaDao = new MangaDAO();
+        MangaDAO mangaDao = new MangaDAO();        
         String xId = request.getParameter("id");
         if (xId != null && !xId.isEmpty()) {
             int id_real = Integer.parseInt(xId);
@@ -53,6 +57,23 @@ public class GetMangaServlet extends HttpServlet {
             }
         }
     }
+    
+    private void getChaptersByMangaID(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        String xId = request.getParameter("id");
+        String includedChapters = request.getParameter("chapters");
+        ChaptersDAO chaptersDao = new ChaptersDAO();
+        if (xId != null && !xId.isEmpty() && includedChapters!= null && includedChapters.equals("true")) {
+            int id_real = Integer.parseInt(xId);
+            List<Chapters> chapters = chaptersDao.getChapterByStoryId(id_real);
+            Gson gson = new Gson();
+            String json = gson.toJson(chapters);
+            response.getWriter().write(json);
+        } else{
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Manga ID is missing");
+        }
+    }
+            
+
     // Phương thức xử lý tìm kiếm truyện theo tên và tác giả
     private void searchManga(HttpServletRequest request, HttpServletResponse response) throws IOException {
         MangaDAO mangaDao = new MangaDAO();
@@ -77,6 +98,7 @@ public class GetMangaServlet extends HttpServlet {
         String json = gson.toJson(mangas);
         response.getWriter().write(json);
     }
+
     //Phương thức lấy ra những truyện có cùng thể loại 
     private void getMangasSameCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
@@ -100,6 +122,7 @@ public class GetMangaServlet extends HttpServlet {
         }
 
     }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -118,11 +141,16 @@ public class GetMangaServlet extends HttpServlet {
             String xName = request.getParameter("name");
             String xAuthor = request.getParameter("author");
             String xCategoryId = request.getParameter("category_id");
+            String includedChapters = request.getParameter("chapters");
             // Nếu có tham số id thì lấy truyện theo id
+            if(includedChapters!=null && includedChapters.equals("true")){
+                getChaptersByMangaID(request, response);
+                return;
+            }
             if (xId != null) {
                 getMangaById(request, response);
                 return;
-            }
+            }            
             // Nếu có tham số newest=true thì lấy 10 truyện mới nhất
             if (isNewest != null && isNewest.equals("true")) {
                 getNewestMangas(response);

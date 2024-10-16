@@ -4,8 +4,10 @@ dao\CategoriesDAO.class
 model\Categories.class
 dao\mydao\MyDAO.class
 com\mycompany\testmaven\DatabaseConnection.class
+model\Chapters.class
 model\Manga.class
 dao\MangaDAO.class
 util\StringUtil.class
+dao\ChaptersDAO.class
 controller\GetCategoriesServlet.class
 com\mycompany\testmaven\JakartaRestConfiguration.class
