@@ -18,45 +18,88 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @WebServlet(name = "GetMangaServlet", urlPatterns = {"/mangas"})
 public class GetMangaServlet extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet GetMangaServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet GetMangaServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    
+    // Phương thức lấy ra tất cả các truyện
+    private void getAllMangas(HttpServletResponse response) throws IOException {
+        MangaDAO mangaDao = new MangaDAO();
+        List<Manga> allMangas = mangaDao.getAllManga(); // Giả sử phương thức này đã được định nghĩa trong MangaDAO
+        Gson gson = new Gson();
+        String json = gson.toJson(allMangas);
+        response.getWriter().write(json);
+    }
+    // Phương thức xử lý lấy ra 10 truyện mới nhất
+    private void getNewestMangas(HttpServletResponse response) throws IOException {
+        MangaDAO mangaDao = new MangaDAO();
+        List<Manga> newMangas = mangaDao.getNewMangas();
+        Gson gson = new Gson();
+        String json = gson.toJson(newMangas);
+        response.getWriter().write(json);
+    }
+    //Phương thức xử lý lấy truyện theo ID
+    private void getMangaById(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        MangaDAO mangaDao = new MangaDAO();
+        String xId = request.getParameter("id");
+        if (xId != null && !xId.isEmpty()) {
+            int id_real = Integer.parseInt(xId);
+            Manga manga = mangaDao.getMangasById(id_real);
+            if (manga != null) {
+                Gson gson = new Gson();
+                String json = gson.toJson(manga);
+                response.getWriter().write(json);
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Manga not found");
+            }
         }
     }
+    // Phương thức xử lý tìm kiếm truyện theo tên và tác giả
+    private void searchManga(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        MangaDAO mangaDao = new MangaDAO();
+        String xName = request.getParameter("name");
+        String xAuthor = request.getParameter("author");
+        List<Manga> mangas = new ArrayList<>();
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+        if (xAuthor != null && xName != null) {
+            List<Manga> tmp1 = mangaDao.getMangaByAuthor(xAuthor);
+            List<Manga> tmp2 = mangaDao.getMangaByName(xName);
+            tmp1.addAll(tmp2);
+            mangas = tmp1;
+        } else if (xName != null) {
+            mangas = mangaDao.getMangaByName(xName);
+        } else if (xAuthor != null) {
+            mangas = mangaDao.getMangaByAuthor(xAuthor);
+        } else {
+            mangas = mangaDao.getAllManga();
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(mangas);
+        response.getWriter().write(json);
+    }
+    //Phương thức lấy ra những truyện có cùng thể loại 
+    private void getMangasSameCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            MangaDAO mangaDao = new MangaDAO();
+            String categoryId = request.getParameter("category_id");
+            if (categoryId == null || categoryId.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID is missing or invalid");
+                return;
+            }
+            int id_real = Integer.parseInt(categoryId);
+            List<Manga> mangas = mangaDao.getMangasByCategoryID(id_real);
+            if (mangas.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "No mangas found for this category");
+                return;
+            }
+            Gson gson = new Gson();
+            String json = gson.toJson(mangas);
+            response.getWriter().write(json);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -66,83 +109,49 @@ public class GetMangaServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*"); // Thay '*' bằng tên miền cụ thể nếu cần
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        
-        //xử lý lấy ra 10 truyện mới nhất
-        
-            
+
         try {
-            MangaDAO mangaDao = new MangaDAO();
+
+            // Lấy tất cả các tham số cần thiết
             String xId = request.getParameter("id");
-
-            // Kiểm tra nếu có id thì trả về manga theo id
-            if (xId != null && !xId.isEmpty()) {
-                int id_real = Integer.parseInt(xId);
-                Manga manga = mangaDao.getMangasById(id_real);
-                if (manga != null) {
-                    Gson gson = new Gson();
-                    String json = gson.toJson(manga);
-                    response.getWriter().write(json);
-                    return; // Dừng lại sau khi trả về manga theo id
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Manga not found");
-                    return;
-                }
-            }
-
-            // Nếu không có id thì thực hiện tìm kiếm theo tên và tác giả
+            String isNewest = request.getParameter("newest");
             String xName = request.getParameter("name");
             String xAuthor = request.getParameter("author");
-
-            List<Manga> mangas = new ArrayList<>();
-            if (xAuthor != null && xName != null) {
-                List<Manga> tmp1 = mangaDao.getMangaByAuthor(xAuthor);
-                List<Manga> tmp2 = mangaDao.getMangaByName(xName);
-
-                tmp1.addAll(tmp2);
-                mangas = tmp1;
-            } else if (xName != null) {
-                mangas = mangaDao.getMangaByName(xName);
-            } else if (xAuthor != null) {
-                mangas = mangaDao.getMangaByAuthor(xAuthor);
-            } else {
-                mangas = mangaDao.getAllManga();
+            String xCategoryId = request.getParameter("category_id");
+            // Nếu có tham số id thì lấy truyện theo id
+            if (xId != null) {
+                getMangaById(request, response);
+                return;
             }
+            // Nếu có tham số newest=true thì lấy 10 truyện mới nhất
+            if (isNewest != null && isNewest.equals("true")) {
+                getNewestMangas(response);
+                return;
+            }
+            // Nếu có tham số name hoặc author thì thực hiện tìm kiếm
+            if (xName != null || xAuthor != null) {
+                searchManga(request, response);
+                return;
+            }
+            //neu nguoi dung an vao 1 the loai truyen, tra ra truyen cung the loai
+            if (xCategoryId != null) {
+                getMangasSameCategory(request, response);
+                return;
+            }
+            // Nếu không có tham số nào, thì trả về tất cả các truyện
+            getAllMangas(response);
 
-            Gson gson = new Gson();
-            String json = gson.toJson(mangas);
-            response.getWriter().write(json);
         } catch (Exception e) {
             System.out.println(e);
         }
-        
-//        //Loc ra 10 truyen duoc update moi nhat
-//        MangaDAO mangaDao = new MangaDAO();
-//        List<Manga> new_stories = mangaDao.getNewMangas();
-//        Gson gson = new Gson();
-//        String json = gson.toJson(new_stories);
-//        response.getWriter().write(json);
-
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        //processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";

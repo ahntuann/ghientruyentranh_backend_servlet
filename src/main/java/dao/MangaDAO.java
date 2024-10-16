@@ -59,9 +59,18 @@ public class MangaDAO extends MyDAO {
         return mangas;
     }
 
+    //lấy ra list truyện dựa vào tên được tìm kiếm bởi người dùng
     public List<Manga> getMangaByName(String xName) {
         List<Manga> mangas = new ArrayList<>();
-        xSql = "select * from stories where title like ? COLLATE Vietnamese_CI_AI";
+        boolean isNonAccent = StringUtil.isNonAccent(xName);
+        String xSql = "";
+        if (isNonAccent) {
+            // Nếu chuỗi không dấu, tìm kiếm không dấu
+            xSql = "SELECT * FROM stories WHERE dbo.removeAccent(title) LIKE ? COLLATE Vietnamese_CI_AI";
+        } else {
+            // Nếu chuỗi có dấu, tìm kiếm theo có dấu
+            xSql = "SELECT * FROM stories WHERE title LIKE ? COLLATE Vietnamese_CI_AI";
+        }
 
         try {
             ps = con.prepareStatement(xSql);
@@ -74,7 +83,6 @@ public class MangaDAO extends MyDAO {
         } catch (Exception e) {
             System.out.println(e);
         }
-
         return mangas;
     }
 
@@ -86,7 +94,6 @@ public class MangaDAO extends MyDAO {
             ps = con.prepareStatement(xSql);
             ps.setString(1, "%" + xAuthor + "%");
             rs = ps.executeQuery();
-
             mangas = createMangas(rs);
         } catch (Exception e) {
             System.out.println(e);
@@ -115,7 +122,7 @@ public class MangaDAO extends MyDAO {
                 java.sql.Date updated_at = rs.getDate("updated_at");
                 int like_count = rs.getInt("like_count");
                 story_selected = new Manga(story_id, title, author, description,
-                        cover_image, status, created_at, 
+                        cover_image, status, created_at,
                         updated_at, like_count);
             }
 
@@ -125,9 +132,9 @@ public class MangaDAO extends MyDAO {
         return story_selected;
 
     }
-    
+
     //Lấy ra 10 truyện được update mới nhất
-    public List<Manga> getNewMangas(){
+    public List<Manga> getNewMangas() {
         String xSql = "SELECT TOP 10 * \n"
                 + "FROM Stories\n"
                 + "ORDER BY updated_at DESC;";
@@ -141,6 +148,25 @@ public class MangaDAO extends MyDAO {
             System.out.println(e);
         }
         return new_mangas;
+    }
+
+    public List<Manga> getMangasByCategoryID(int category_id) {
+        List<Manga> mangas = new ArrayList<>();
+        String xSql = "SELECT s.* FROM Stories s \n"
+                + "JOIN story_categories sc ON s.story_id = sc.story_id \n"
+                + "JOIN Categories c ON sc.category_id = c.category_id \n"
+                + "WHERE c.category_id = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, category_id);
+            rs = ps.executeQuery();
+            mangas = createMangas(rs);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return mangas;
+
     }
 
 }
