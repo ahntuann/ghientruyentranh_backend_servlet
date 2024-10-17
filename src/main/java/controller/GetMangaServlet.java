@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import com.google.gson.Gson;
+import dao.CategoriesDAO;
 import dao.ChaptersDAO;
 import dao.MangaDAO;
 import model.Manga;
@@ -18,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Categories;
 import model.Chapters;
 
 @WebServlet(name = "GetMangaServlet", urlPatterns = {"/mangas"})
@@ -43,7 +41,7 @@ public class GetMangaServlet extends HttpServlet {
 
     //Phương thức xử lý lấy truyện theo ID
     private void getMangaById(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        MangaDAO mangaDao = new MangaDAO();        
+        MangaDAO mangaDao = new MangaDAO();
         String xId = request.getParameter("id");
         if (xId != null && !xId.isEmpty()) {
             int id_real = Integer.parseInt(xId);
@@ -58,21 +56,21 @@ public class GetMangaServlet extends HttpServlet {
         }
     }
     
-    private void getChaptersByMangaID(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    //lấy ra  tất cả các chapter của 1 truyện dựa vào id truyện
+    private void getChaptersByMangaID(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String xId = request.getParameter("id");
         String includedChapters = request.getParameter("chapters");
         ChaptersDAO chaptersDao = new ChaptersDAO();
-        if (xId != null && !xId.isEmpty() && includedChapters!= null && includedChapters.equals("true")) {
+        if (xId != null && !xId.isEmpty() && includedChapters != null && includedChapters.equals("true")) {
             int id_real = Integer.parseInt(xId);
             List<Chapters> chapters = chaptersDao.getChapterByStoryId(id_real);
             Gson gson = new Gson();
             String json = gson.toJson(chapters);
             response.getWriter().write(json);
-        } else{
+        } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Manga ID is missing");
         }
     }
-            
 
     // Phương thức xử lý tìm kiếm truyện theo tên và tác giả
     private void searchManga(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -123,6 +121,29 @@ public class GetMangaServlet extends HttpServlet {
 
     }
 
+    //Phương thức lấy ra category của manga cụ thể khi biết mangaID
+    private void getCategoriesByMangasId(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            CategoriesDAO categriesDao = new CategoriesDAO();
+            String mangaId = request.getParameter("id");
+            if (mangaId == null || mangaId.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID is missing or invalid");
+                return;
+            }
+            int id_real = Integer.parseInt(mangaId);
+            List<Categories> categories = categriesDao.getCategoriesByMangasId(id_real);
+            if (categories.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "No categories found for this manga");
+                return;
+            }
+            Gson gson = new Gson();
+            String json = gson.toJson(categories);
+            response.getWriter().write(json);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -132,7 +153,6 @@ public class GetMangaServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*"); // Thay '*' bằng tên miền cụ thể nếu cần
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
         try {
 
             // Lấy tất cả các tham số cần thiết
@@ -142,15 +162,23 @@ public class GetMangaServlet extends HttpServlet {
             String xAuthor = request.getParameter("author");
             String xCategoryId = request.getParameter("category_id");
             String includedChapters = request.getParameter("chapters");
-            // Nếu có tham số id thì lấy truyện theo id
-            if(includedChapters!=null && includedChapters.equals("true")){
+            String category = request.getParameter("category");
+
+            //nếu có id và chapters=true thì lấy ra chapters của truyện đó
+            if (includedChapters != null && includedChapters.equals("true")) {
                 getChaptersByMangaID(request, response);
                 return;
             }
+            //nếu có id và category=true thì lấy ra thể loại của truyện đó
+            if (category != null && category.equals("true")) {
+                getCategoriesByMangasId(request, response);
+                return;
+            }
+            // Nếu chỉ có tham số id thì lấy truyện theo id
             if (xId != null) {
                 getMangaById(request, response);
                 return;
-            }            
+            }
             // Nếu có tham số newest=true thì lấy 10 truyện mới nhất
             if (isNewest != null && isNewest.equals("true")) {
                 getNewestMangas(response);
@@ -177,9 +205,8 @@ public class GetMangaServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //processRequest(request, response);
+        
     }
-
     @Override
     public String getServletInfo() {
         return "Short description";
