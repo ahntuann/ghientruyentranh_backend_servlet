@@ -42,4 +42,23 @@ public class CategoriesDAO extends MyDAO {
         return categories;
     }
 
+    //getCategoriesByMangasId
+    public List<Categories> getCategoriesByMangasId(int storyId) throws SQLException {
+        List<Categories> categories = new ArrayList<>();
+        String xSql = "select c.category_id, c.category_name\n"
+                + "from Categories c \n"
+                + "join story_categories sc on c.category_id = sc.category_id\n"
+                + "join Stories s on s.story_id = sc.story_id\n"
+                + "where s.story_id = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, storyId);
+            rs = ps.executeQuery();
+            categories = createCategories(rs);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return categories;
+    }
+
 }
