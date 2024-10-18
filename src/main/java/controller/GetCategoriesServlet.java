@@ -14,10 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 import model.Categories;
 
-/**
- *
- * @author Admin
- */
 @WebServlet(name = "GetCategoriesServlet", urlPatterns = {"/categories"})
 public class GetCategoriesServlet extends HttpServlet {
 
