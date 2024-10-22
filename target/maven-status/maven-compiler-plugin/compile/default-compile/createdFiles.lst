@@ -3,11 +3,17 @@ controller\GetMangaServlet.class
 dao\CategoriesDAO.class
 model\Categories.class
 dao\mydao\MyDAO.class
+model\ChapterImage.class
 com\mycompany\testmaven\DatabaseConnection.class
 model\Chapters.class
+dao\ChapterImageDAO.class
 model\Manga.class
+controller\GetChapterImages.class
+model\Users.class
 dao\MangaDAO.class
+dao\UsersDAO.class
 util\StringUtil.class
 dao\ChaptersDAO.class
+service\FirebaseService.class
 controller\GetCategoriesServlet.class
 com\mycompany\testmaven\JakartaRestConfiguration.class

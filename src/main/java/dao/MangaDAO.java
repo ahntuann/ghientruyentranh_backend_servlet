@@ -77,7 +77,7 @@ public class MangaDAO extends MyDAO {
             ps.setString(1, "%" + xName + "%");
             rs = ps.executeQuery();
 
-            System.out.println(StringUtil.removeAccent(xName));
+//            System.out.println(StringUtil.removeAccent(xName));
 
             mangas = createMangas(rs);
         } catch (Exception e) {
