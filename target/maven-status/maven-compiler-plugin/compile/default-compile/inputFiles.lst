@@ -1,8 +1,13 @@
+D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\ChapterImageDAO.java
+D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\UsersDAO.java
+D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\controller\GetChapterImages.java
+D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\service\FirebaseService.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\ChaptersDAO.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\Chapters.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\controller\GetMangaServlet.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\controller\GetCategoriesServlet.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\com\mycompany\testmaven\DatabaseConnection.java
+D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\ChapterImage.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\MangaDAO.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\Manga.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\com\mycompany\testmaven\resources\JakartaEE10Resource.java
@@ -10,4 +15,5 @@ D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\mydao\MyDAO.jav
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\CategoriesDAO.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\util\StringUtil.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\com\mycompany\testmaven\JakartaRestConfiguration.java
+D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\Users.java
 D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\Categories.java

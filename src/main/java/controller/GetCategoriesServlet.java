@@ -45,6 +45,7 @@ public class GetCategoriesServlet extends HttpServlet {
             System.out.println("Lỗi khi lấy dữ liệu categories: " + e.getMessage());
         }
     }
+    
 
 
     @Override
