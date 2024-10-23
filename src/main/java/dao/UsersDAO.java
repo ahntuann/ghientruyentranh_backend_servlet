@@ -2,6 +2,8 @@ package dao;
 
 import dao.mydao.MyDAO;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import model.Users;
 
 public class UsersDAO extends MyDAO {
@@ -33,6 +35,45 @@ public class UsersDAO extends MyDAO {
         }
 
         return user;
+    }
+    
+    public List<Users> getUserByListID(List<Integer> userIDs) {
+        List<Users> users = new ArrayList<>();
+        xSql = "select * from users where user_id in (";
+        StringBuilder sqlBuilder = new StringBuilder(xSql);
+        
+        int n = userIDs.size();
+        for (int i = 0; i < n - 1; i++) {
+            sqlBuilder.append("?, ");
+        }
+        sqlBuilder.append("?)");
+        
+        try {
+            ps = con.prepareStatement(sqlBuilder.toString());
+            
+            for (int i = 0; i < n; i++) 
+                ps.setInt(i + 1, userIDs.get(i));
+            
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Users user = new Users();
+                user.setUser_id(rs.getInt("user_id"));
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setAvatar(rs.getString("avatar"));
+                user.setRole(rs.getString("role"));
+                user.setCreated_at(rs.getDate("created_at"));
+                user.setUpdated_at(rs.getDate("updated_at"));
+                user.setVip(rs.getInt("vip"));
+                
+                users.add(user);
+            }
+        } catch (Exception e) {
+        }
+        
+        return users;
     }
     
     //phương thức để thêm vào 1 user
