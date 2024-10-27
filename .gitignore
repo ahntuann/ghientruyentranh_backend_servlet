@@ -1,10 +1,11 @@
 .DS_Store
-/nbproject/private/
-/build/
-<<<<<<< HEAD
-/dist/
+# macOS system files
+.DS_Store
 
-=======
+# NetBeans project files
+/nbproject/private/
+
+# Build directories
+/build/
 /dist/
->>>>>>> badcbb1e962bd62f4e3ce25d84a81cd0f277fdae
 /target/
