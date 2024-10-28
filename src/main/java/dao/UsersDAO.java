@@ -79,7 +79,6 @@ public class UsersDAO extends MyDAO {
         } catch (Exception e) {
             System.out.println(e);
         }
-
         return user;
     }
 
