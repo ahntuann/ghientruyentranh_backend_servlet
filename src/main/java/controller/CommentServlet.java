@@ -15,7 +15,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import model.Comment;
 import dao.CommentDAO;
+import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import model.Users;
+import org.json.JSONObject;
 
 /**
  *
@@ -49,27 +55,15 @@ public class CommentServlet extends HttpServlet {
             out.println("</html>");
         }
     }
-
-    private void getAllCommentsByChapterID(int chapterID, HttpServletRequest request, HttpServletResponse response)
-            throws IOException, SQLException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        // Cấu hình CORS
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-        CommentDAO commentDao = new CommentDAO();
-        List<Comment> comments = commentDao.getAllCommentsByChapterID(chapterID);
-        Gson gson = new Gson();
-
-        String json = gson.toJson(comments);
-        response.getWriter().write(json);
-    }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        // Cấu hình CORS
+        setCORHeader(response);
+        
         int chapterID = -1;
         try {
             String xChapterID = request.getParameter("chapterID");
@@ -86,6 +80,14 @@ public class CommentServlet extends HttpServlet {
 
     }
 
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        setCORHeader(response);
+        
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -97,7 +99,12 @@ public class CommentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        // Cấu hình CORS
+        setCORHeader(response);
+
+        handlePostComment(request, response);
     }
 
     /**
@@ -109,5 +116,82 @@ public class CommentServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    private void setCORHeader(HttpServletResponse response) {
+        // Cấu hình CORS
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        
+    } 
+
+    private void getAllCommentsByChapterID(int chapterID, HttpServletRequest request, HttpServletResponse response)
+            throws IOException, SQLException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        setCORHeader(response);
+
+        CommentDAO commentDao = new CommentDAO();
+        List<Comment> comments = commentDao.getAllCommentsByChapterID(chapterID);
+        Gson gson = new Gson();
+
+        String json = gson.toJson(comments);
+        response.getWriter().write(json);
+    }
+    
+    private JSONObject parseBodyRequest(HttpServletRequest request) throws IOException{
+        StringBuilder sb = new StringBuilder();
+        String line;
+        BufferedReader reader = request.getReader();
+        
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        
+        return new JSONObject(sb.toString().trim());
+    }
+    
+    private void handlePostComment(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false);
+        PrintWriter out = response.getWriter();
+        Map<String, Object> res = new HashMap<>();
+        Gson gson = new Gson();
+        
+        System.out.println(session);
+        
+        if (session == null || session.getAttribute("user") == null) {
+            res.put("success", "false");
+            res.put("message", "You have to log in to comment!");
+            out.print(gson.toJson(res));
+        } else {
+            JSONObject requestBody = parseBodyRequest(request);
+            
+            String content = requestBody.getString("content");
+            int chapterID = requestBody.getInt("chapterID");
+            int mangaID = requestBody.getInt("mangaID");
+            int userID = requestBody.getInt("userID");
+            
+            CommentDAO commentDAO = new CommentDAO();
+            
+            Comment insertedComment = commentDAO.insertComment(userID, chapterID, mangaID, content);
+            System.out.println("inserted: " +insertedComment);
+            if (insertedComment != null) {
+                res.put("success", "true");
+                res.put("comment", insertedComment);
+            } else {
+                res.put("succes", "false");
+            }
+            
+            res.put("message", "You can now comment!");
+            
+
+            out.print(gson.toJson(res));
+        }
+        out.flush();
+        out.close();
+    }
+
 
 }

@@ -1,19 +1,30 @@
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\ChapterImageDAO.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\UsersDAO.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\controller\GetChapterImages.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\service\FirebaseService.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\ChaptersDAO.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\Chapters.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\controller\GetMangaServlet.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\controller\GetCategoriesServlet.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\com\mycompany\testmaven\DatabaseConnection.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\ChapterImage.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\MangaDAO.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\Manga.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\com\mycompany\testmaven\resources\JakartaEE10Resource.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\mydao\MyDAO.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\dao\CategoriesDAO.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\util\StringUtil.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\com\mycompany\testmaven\JakartaRestConfiguration.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\Users.java
-D:\Work Space\ghientruyentranh_backend_servlet\src\main\java\model\Categories.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/dao/ChaptersDAO.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/GetChapterServlet.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/dao/MangaDAO.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/GetMangaServlet.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/GetCategoriesServlet.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/CommentServlet.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/model/Chapters.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/util/StringUtil.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/dao/mydao/MyDAO.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/dao/CategoriesDAO.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/com/mycompany/testmaven/resources/JakartaEE10Resource.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/GoogleCallBackServlet.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/dao/CommentDAO.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/model/Categories.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/UserServlet.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/LoginServlet.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/model/Comment.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/com/mycompany/testmaven/JakartaRestConfiguration.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/model/VerifyCode.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/model/ChapterImage.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/dao/ChapterImageDAO.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/RegisterServlet.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/controller/GetChapterImages.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/service/FirebaseService.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/com/mycompany/testmaven/DatabaseConnection.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/model/Manga.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/model/Users.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/dao/EmailSenderDAO.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/util/RandomString.java
+/Users/macbook/Documents/FPT/FA24/PRJ/ghientruyentranh_backend_servlet/src/main/java/dao/UsersDAO.java

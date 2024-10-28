@@ -55,21 +55,28 @@ public class GetMangaServlet extends HttpServlet {
             }
         }
     }
-    
+
     //lấy ra  tất cả các chapter của 1 truyện dựa vào id truyện
     private void getChaptersByMangaID(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String xId = request.getParameter("id");
         String includedChapters = request.getParameter("chapters");
-        ChaptersDAO chaptersDao = new ChaptersDAO();
-        if (xId != null && !xId.isEmpty() && includedChapters != null && includedChapters.equals("true")) {
-            int id_real = Integer.parseInt(xId);
-            List<Chapters> chapters = chaptersDao.getChapterByStoryId(id_real);
-            Gson gson = new Gson();
-            String json = gson.toJson(chapters);
-            response.getWriter().write(json);
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Manga ID is missing");
+        ChaptersDAO chaptersDao;
+
+        try {
+            chaptersDao = new ChaptersDAO();
+            if (xId != null && !xId.isEmpty() && includedChapters != null && includedChapters.equals("true")) {
+                int id_real = Integer.parseInt(xId);
+                List<Chapters> chapters = chaptersDao.getChapterByStoryId(id_real);
+                Gson gson = new Gson();
+                String json = gson.toJson(chapters);
+                response.getWriter().write(json);
+            } else {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Manga ID is missing");
+            }
+        } catch (Throwable t) {
+            t.printStackTrace(); // In toàn bộ stack trace
         }
+
     }
 
     // Phương thức xử lý tìm kiếm truyện theo tên và tác giả
@@ -205,8 +212,9 @@ public class GetMangaServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
+
     @Override
     public String getServletInfo() {
         return "Short description";
