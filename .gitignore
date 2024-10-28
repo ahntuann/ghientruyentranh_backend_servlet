@@ -9,3 +9,7 @@
 /build/
 /dist/
 /target/
+
+# .gitignore
+src/main/resources/fir-credentials-b7b1a-firebase-adminsdk-rqo9d-9115896dac.json
+
